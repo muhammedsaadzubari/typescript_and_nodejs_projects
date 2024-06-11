@@ -2,22 +2,16 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
-async function animateTitle() {
-    const titleAnimation = chalkAnimation.rainbow(`
-    Let's COUNT the WORDS and LETTERS in our provided PARAGRAPH or SENTENCE! \n
-    
-    LIKE:    My name is Muhammed Saad
-             1   2   3     4      5         There are 5 words in your sentence.
-             2   6   8    16     20        There are 20 letters in your sentence.
-
-    Developed by MUHAMMED SAAD \n\n
-    `);
-    await sleep(2000);
-    titleAnimation.stop();
-}
-function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
+const sleep = () => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, 2000);
+    });
+};
+const title = async () => {
+    let rainbowTitleAnimation = chalkAnimation.rainbow("TypeScript And NodeJs Projects\n\nProject #05: Word Counter\n\nDeveloped by MUHAMMED SAAD \n\n");
+    await sleep();
+    rainbowTitleAnimation.stop();
+};
 async function promptForSentence() {
     const { sentence } = await inquirer.prompt([
         {
@@ -60,7 +54,7 @@ async function promptRestartOrExit() {
     return restart;
 }
 async function main() {
-    await animateTitle();
+    await title();
     let continuePrompting = true;
     while (continuePrompting) {
         try {

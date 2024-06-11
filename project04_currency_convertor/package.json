@@ -1,7 +1,7 @@
 {
   "name": "@muhammedsaadzubari/project04_currency_convertor",
   "description": "",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "app.js",
   "type": "module",
   "bin": "app.js",

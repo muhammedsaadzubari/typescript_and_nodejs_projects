@@ -3,214 +3,240 @@
 import inquirer from "inquirer";
 import chalkAnimation from "chalk-animation";
 import chalk from "chalk";
+import validator from "validator";
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 2000));
+type int = number;
+type str = string;
 
 interface Account {
-  name: string;
-  email: string;
-  pin: number;
-  id: number;
-  balance: number;
+  ID: str;
+  Name: str;
+  Email: str;
+  PIN: str;
+  Balance: int;
 }
-let balance: number = Math.round(Math.random() * 1000000);
-const accounts: Account[] = [
-  {
-    name: "Muhammed Saad",
-    email: "muhammedsaad@gmail.com",
-    pin: 1234567890,
-    id: 1000,
-    balance: balance
-  },
-  {
-    name: "Hamzah Syed",
-    email: "hamzahsyed@gmail.com",
-    pin: 1234099890,
-    id: 2000,
-    balance: balance
-  },
-  {
-    name: "Daniyal Qasmi",
-    email: "daniyalqasmi@gmail.com",
-    pin: 9764567890,
-    id: 3000,
-    balance: balance
-  },
-  {
-    name: "Muhammed Maaz",
-    email: "muhammedmaaz@gmail.com",
-    pin: 1657567890,
-    id: 4000,
-    balance: balance
-  },
-];
 
-// Function to animate title
-async function rainbowTitle() {
-  const addRainbowTitle = chalkAnimation.rainbow(`
-  Let's WITHDRAW the CASH! \n
-          
-  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒            ▒▒▒▒    ░░▒▒▒▒▒▒▒▒▒▒    ░░▒▒▒▒                          
-  ▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒        ▒▒▒▒            ▒▒▒▒    ▒▒▒▒▒▒▒▒▒▒▒▒    ░░▒▒▒▒                          
-  ▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒    ▒▒▒▒    ▒▒▒▒▒▒  ░░▒▒▒▒▒▒▒▒      ░░▒▒▒▒▒▒      ░░▒▒▒▒                          
-  ▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒    ▒▒▒▒    ▒▒▒▒▒▒  ░░▒▒▒▒▒▒▒▒          ▒▒        ░░▒▒▒▒                          
-  ▒▒▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒            ▒▒▒▒▒▒  ░░▒▒▒▒▒▒▒▒    ░░▒▒      ▒▒    ░░▒▒▒▒                          
-  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒    ▒▒▒▒    ▒▒▒▒▒▒  ░░▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒▒▒▒    ░░▒▒▒▒                          
-  ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒    ▒▒▒▒    ▒▒▒▒▒▒  ░░▒▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒▒▒▒    ░░▒▒▒▒                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░                                  ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░                                  ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒░░░░░░░░░░░░░░░░░░░░░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒    ▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░    ▓▓▓▓▓▓▓▓▓▓▓▓▒▒▒▒▒▒▒▒▒▒░░░░    ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░                                  ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░          ▒▒  ▒▒  ▒▒  ░░  ▒▒      ░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░▒▒  ▒▒  ▒▒░░▒▒░░▒▒░░░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░▒▒  ▒▒  ▒▒  ▒▒  ▒▒░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░░░░░░░░░░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░▒▒▒▒▒▒▒▒░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░░░  ░░░░░░░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒░░░░░░▒▒▒▒▒▒▒▒░░░░░░░░                                            
-  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▓▓▓▓▓▓▓▓▓▓▒▒▒▒░░░░░░  ░░░░░░░░░░░░░░   
-          
-  Developed by MUHAMMED SAAD \n\n
-  `);
+const sleep = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
+
+const title = async () => {
+  let rainbowTitleAnimation = chalkAnimation.rainbow(
+    "TypeScript And NodeJs Projects\n\nProject #02: Automatic Teller Machine\n\nDeveloped by MUHAMMED SAAD \n\n"
+  );
   await sleep();
-  addRainbowTitle.stop();
-}
-
-async function getEmailIdPin(): Promise<{
-  email: string;
-  id: number;
-  pin: number;
-}> {
-  const { email, id, pin } = await inquirer.prompt([
-    {
-      name: "email",
-      message: "Enter your email:",
-      type: "input",
-    },
-    {
-      name: "id",
-      message: "Enter your ID:",
-      type: "number",
-    },
-    {
-      name: "pin",
-      message: "Enter your PIN:",
-      type: "password",
-      mask: "•",
-    },
-  ]);
-
-  return { email, id, pin: Number(pin) };
-}
-
-async function performOperation(userAccount: Account | undefined) {
-  if (!userAccount) {
-    console.error(chalk.red("Invalid credentials!"));
-    const { tryAgain } = await inquirer.prompt<{ tryAgain: string }>({
-      name: "tryAgain",
-      message: "Do you want to try again?",
-      type: "list",
-      choices: ["Yes", "No"]
-    });
-    if (tryAgain === "No") {
-      console.log(chalk.blue("Thank you for using our service!"));
-      process.exit();
-    }
-    return;
+  rainbowTitleAnimation.stop();
+};
+const exeedsAmountMessage = async () => {
+  console.log(chalk.red("Amount exeeds your balance!"));
+};
+const fastCash = async (userAccount: Account) => {
+  let { amountToFastCash } = await inquirer.prompt({
+    name: "amountToFastCash",
+    type: "list",
+    message: "Select amount to withdraw:",
+    choices: ["500", "1000", "5000", "10000"],
+  });
+  amountToFastCash = Number(amountToFastCash);
+  if (amountToFastCash <= userAccount.Balance) {
+    userAccount.Balance -= amountToFastCash;
+    await balanceInquiry(userAccount, "Remaining");
+  } else {
+    await exeedsAmountMessage();
   }
-
-  console.log(chalk.green(`Hi ${userAccount.name}! You have logged in!`));
-
-  const { operation } = await inquirer.prompt<{ operation: string }>([
-    {
-      name: "operation",
-      message: "Choose operation to perform:",
-      type: "list",
-      choices: ["Balance Inquiry", "Fast Cash", "Cash Withdrawal", "Exit"],
-    },
-  ]);
-
-  switch (operation) {
-    case "Fast Cash": {
-      const { amount } = await inquirer.prompt<{ amount: string }>([
-        {
-          name: "amount",
-          message: "Select amount to withdraw:",
-          type: "list",
-          choices: ["500", "1000", "5000", "10000"],
-        },
-      ]);
-      const amountToWithdraw = Number(amount);
-      if (amountToWithdraw <= userAccount.balance) {
-        userAccount.balance -= amountToWithdraw;
-        console.log(chalk.yellow(`Remaining balance: ${userAccount.balance}`));
-      } else {
-        console.error(chalk.red("Amount exceeds your balance!"));
-      }
+};
+const balanceInquiry = async (userAccount: Account, words: str) => {
+  console.log(chalk.yellow(`Your ${words} balance is: ${userAccount.Balance}`));
+};
+const withdrawl = async (userAccount: Account) => {
+  let amountToWithdraw;
+  while (true) {
+    let prompt = await inquirer.prompt({
+      name: "amountToWithdraw",
+      type: "number",
+      message: "Enter amount to withdraw:",
+    });
+    amountToWithdraw = prompt.amountToWithdraw;
+    if (!isNaN(amountToWithdraw)) {
       break;
+    } else {
+      console.log(chalk.red("Enter a valid amount!"));
     }
-    case "Balance Inquiry":
-      console.log(chalk.yellow(`Your balance: ${userAccount.balance}`));
-      break;
-    case "Cash Withdrawal":
-      const { withdrawalAmount } = await inquirer.prompt<{
-        withdrawalAmount: number;
-      }>([
+  }
+  if (amountToWithdraw <= userAccount.Balance) {
+    userAccount.Balance -= amountToWithdraw;
+    await balanceInquiry(userAccount, "Remaining");
+  } else {
+    await exeedsAmountMessage();
+  }
+};
+const exit = async () => {
+  console.log(chalk.blue("Thank you for using our service!"));
+  console.log(chalk.bold(chalk.bgRedBright("Exiting...")));
+  process.exit();
+};
+const promptTypeList = async (choices: str[], message: str) => {
+  let { prompt } = await inquirer.prompt({
+    name: "prompt",
+    type: "list",
+    message,
+    choices,
+  });
+  return prompt;
+};
+const promptTypeConfirm = async () => {
+  let { prompt } = await inquirer.prompt({
+    name: "prompt",
+    type: "confirm",
+    message: "Do you want to continue?",
+  });
+  return prompt;
+};
+const emailPrompt = async () => {
+  let { email } = await inquirer.prompt({
+    name: "email",
+    message: "Enter your email?",
+    type: "input",
+    validate: (Email) => {
+      if (validator.isEmail(Email)) {
+        return true;
+      } else {
+        console.log(chalk.red("Enter a valid name!"));
+        return false;
+      }
+    },
+  });
+  return email;
+};
+const PINPrompt = async () => {
+  let { PIN } = await inquirer.prompt({
+    name: "PIN",
+    message: "Enter your PIN? (Atleast 4 numbers)",
+    type: "password",
+    validate: (PIN) => {
+      if (PIN.match(/^\d{4,}/)) {
+        return true;
+      } else {
+        console.log(chalk.red("Enter a valid PIN (Atleast 4 numbers)!"));
+        return false;
+      }
+    },
+    mask: "•",
+  });
+  return PIN;
+};
+const SignUp = async () => {
+  let operation = await promptTypeList(
+    ["Sign UP", "Exit"],
+    "Which operation do you want to perform?"
+  );
+  switch (operation) {
+    case "Sign UP":
+      let userAccount: Account = await inquirer.prompt([
         {
-          name: "withdrawalAmount",
-          message: "Enter amount to withdraw:",
-          type: "number",
+          name: "Name",
+          message: "Enter your name?",
+          type: "input",
+          validate: (Name) => {
+            if (Name.trim() === "") {
+              console.log(chalk.red("Enter a valid name!"));
+              return false;
+            } else {
+              return true;
+            }
+          },
         },
       ]);
-      const amountToWithdraw = withdrawalAmount;
-      if (amountToWithdraw <= userAccount.balance) {
-        userAccount.balance -= amountToWithdraw;
-        console.log(chalk.yellow(`Remaining balance: ${userAccount.balance}`));
-      } else {
-        console.error(chalk.red("Amount exceeds your balance!"));
-      }
+      userAccount["ID"] = "00001";
+      userAccount["Balance"] = Math.round(Math.random() * 10) * 100000;
+      userAccount["Email"] = await emailPrompt();
+      userAccount["PIN"] = await PINPrompt();
+      return userAccount;
+    default:
+      await exit();
+  }
+};
+
+let LogIn = async () => {
+  let operation = await promptTypeList(
+    ["Log IN", "Exit"],
+    "Which operation do you want to perform?"
+  );
+  switch (operation) {
+    case "Log IN":
+      let userAccount = await inquirer.prompt([
+        {
+          name: "ID",
+          message: "Enter your ID? (Consists of 5 numbers)",
+          type: "input",
+          validate: (ID) => {
+            if (ID.match(/^\d{5}$/)) {
+              return true;
+            } else {
+              console.log(
+                chalk.red("Enter a valid ID! (Consists of 5 numbers)")
+              );
+              return false;
+            }
+          },
+        },
+      ]);
+      userAccount["Email"] = await emailPrompt();
+      userAccount["PIN"] = await PINPrompt();
+      return userAccount;
+    default:
+      await exit();
+  }
+};
+
+let atm = async (userAccount: Account) => {
+  let operation = await promptTypeList(
+    ["Balance Inquiry", "Fast Cash", "Cash Withdrawl", "Exit"],
+    "Select operation to perform:"
+  );
+  switch (operation) {
+    case "Balance Inquiry":
+      await balanceInquiry(userAccount, "Current");
       break;
-    case "Exit":
-      console.log(chalk.blue("Thank you for using our service!"));
-      process.exit();
+    case "Fast Cash":
+      await fastCash(userAccount);
+      break;
+    case "Cash Withdrawl":
+      await withdrawl(userAccount);
       break;
     default:
-      console.error(chalk.red("Invalid operation!"));
+      await exit();
   }
-}
+};
 
-async function main() {
-  await rainbowTitle();
-  let userAccount: Account | undefined;
-  const information = await getEmailIdPin();
-  userAccount = accounts.find(
-    (account) =>
-      account.email === information.email &&
-      account.id === information.id &&
-      account.pin === information.pin
-  );
-  do{
-    await performOperation(userAccount);
-    var restart= await inquirer.prompt<{restart: string}>(
-      {
-        name: "restart",
-        type: "list",
-        message: "Do you want to continue!",
-        choices: ["Yes", "No"]
+let main = async () => {
+  await title();
+  let signUp = await SignUp();
+  console.table(signUp);
+  let bool: boolean = true;
+  while (bool) {
+    let login = await LogIn();
+    if (signUp !== undefined && login !== undefined) {
+      if (
+        login.Email === signUp.Email &&
+        login.ID === signUp.ID &&
+        login.PIN === signUp.PIN
+      ) {
+        let running = true;
+        console.log(
+          chalk.greenBright(`Hi ${signUp.Name}! You have logged in!`)
+        );
+        while (running) {
+          await atm(signUp);
+          running = await promptTypeConfirm();
+        }
+      } else {
+        console.log(chalk.red("Invalid credentials! Failed to LogIN!"));
+        bool = await promptTypeConfirm();
       }
-    )
-  }while(restart.restart === "Yes")
-}
-main();
+    }
+  }
+};
+await main();

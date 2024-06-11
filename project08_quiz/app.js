@@ -2,371 +2,416 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
 import animation from "chalk-animation";
+import ora from "ora";
+class System {
+    static print(...messages) {
+        console.log(...messages);
+    }
+    static async promptList(message, choices, prefix) {
+        let { input } = await inquirer.prompt({
+            name: "input",
+            type: "list",
+            prefix,
+            message,
+            choices,
+        });
+        return input;
+    }
+    static async promptConfirm() {
+        let { input } = await inquirer.prompt({
+            name: "input",
+            type: "confirm",
+            message: "Do you want to continue?",
+        });
+        return input;
+    }
+}
 class Animate_Banner {
-    static #banner = `
-  "Ready to have some fun with this quiz?"
-                d8b         
-                Y8P         
-                            
-   .d88888888  88888888888888 
-  d88" 888888  888888   d88P  
-  888  888888  888888  d88P   
-  Y88b 888Y88b 888888 d88P    
-  "Y88888 "Y8888888888888888 
-       888                    
-       888                    
-       888                                      
-  \n
-
-  Develop by MUHAMMED SAAD \n\n`;
+    static banner = "TypeScript And NodeJs Projects\n\nProject #08: Quiz\n\nDeveloped by MUHAMMED SAAD \n\n";
     static sleep(ms) {
         return new Promise((res) => setTimeout(res, ms));
     }
     static async rainbow_title() {
-        let add_rainbow_title = animation.rainbow(this.#banner);
+        let add_rainbow_title = animation.rainbow(this.banner);
         await Animate_Banner.sleep(2000);
         add_rainbow_title.stop();
     }
 }
 class Main {
-    static #question_simple = [
+    static simpleLevelQuestions = [
         {
-            question: "What is TypeScript?",
-            options: [
-                "a) A JavaScript library",
-                "b) A programming language",
-                "c) A markup language",
-                "d) A database management system",
-            ],
-            correct_answer: "b) A programming language",
+            question: "What is TypeScript primarily used for?",
+            options: {
+                a: "Styling web pages",
+                b: "Server-side scripting",
+                c: "Enhancing JavaScript with static typing",
+                d: "Creating databases",
+            },
+            answer: "Enhancing JavaScript with static typing",
         },
         {
             question: "Which keyword is used to declare a variable in TypeScript?",
-            options: ["a) var", "b) let", "c) const", "d) All of the above"],
-            correct_answer: "d) All of the above",
+            options: {
+                a: "let",
+                b: "var",
+                c: "const",
+                d: "all of the above",
+            },
+            answer: "all of the above",
         },
         {
-            question: "What is the basic data type to represent whole numbers in TypeScript?",
-            options: ["a) number", "b) string", "c) boolean", "d) integer"],
-            correct_answer: "a) number",
+            question: "What is the extension of TypeScript files?",
+            options: {
+                a: ".ts",
+                b: ".js",
+                c: ".css",
+                d: ".html",
+            },
+            answer: ".ts",
         },
         {
-            question: "Which symbol is used to declare a type in TypeScript?",
-            options: ["a) !", "b) :", "c) #", "d) $"],
-            correct_answer: "b) :",
+            question: "Which tool is commonly used to compile TypeScript code to JavaScript?",
+            options: {
+                a: "Node.js",
+                b: "Webpack",
+                c: "TypeScript Compiler (tsc)",
+                d: "Babel",
+            },
+            answer: "TypeScript Compiler (tsc)",
         },
         {
-            question: "How do you define a function in TypeScript?",
-            options: [
-                "a) function myFunction() {}",
-                "b) def myFunction() {}",
-                "c) let myFunction = function() {}",
-                "d) Both a and c",
-            ],
-            correct_answer: "d) Both a and c",
+            question: "What does 'type inference' mean in TypeScript?",
+            options: {
+                a: "Defining types explicitly",
+                b: "Inferring types based on the context",
+                c: "Automatically converting types",
+                d: "Ignoring type errors",
+            },
+            answer: "Inferring types based on the context",
         },
         {
-            question: "What keyword is used to define an interface in TypeScript?",
-            options: ["a) class", "b) interface", "c) type", "d) implements"],
-            correct_answer: "b) interface",
+            question: "Which symbol is used to denote a type assertion in TypeScript?",
+            options: {
+                a: "<>",
+                b: "()",
+                c: "{}",
+                d: "[]",
+            },
+            answer: "<>",
         },
         {
-            question: "How do you define a class in TypeScript?",
-            options: [
-                "a) class MyClass {}",
-                "b) function MyClass() {}",
-                "c) let MyClass = {}",
-                "d) interface MyClass {}",
-            ],
-            correct_answer: "a) class MyClass {}",
+            question: "What is the purpose of 'interface' in TypeScript?",
+            options: {
+                a: "To declare a new class",
+                b: "To define the structure of an object",
+                c: "To create private methods",
+                d: "To implement inheritance",
+            },
+            answer: "To define the structure of an object",
         },
         {
-            question: "What is the purpose of the 'extends' keyword in TypeScript?",
-            options: [
-                "a) To create a subclass",
-                "b) To extend the length of an array",
-                "c) To include external libraries",
-                "d) To import modules",
-            ],
-            correct_answer: "a) To create a subclass",
+            question: "Which of the following is NOT a TypeScript feature?",
+            options: {
+                a: "Generics",
+                b: "Enums",
+                c: "Interfaces",
+                d: "Looping",
+            },
+            answer: "Looping",
         },
         {
-            question: "Which operator is used for optional properties in TypeScript?",
-            options: ["a) !", "b) ?", "c) :", "d) ."],
-            correct_answer: "b) ?",
+            question: "What is the result of adding a number and a string in TypeScript?",
+            options: {
+                a: "An error",
+                b: "A concatenated string",
+                c: "The number",
+                d: "Undefined",
+            },
+            answer: "A concatenated string",
         },
         {
-            question: "How can we compile a typescript code into javascript?",
-            options: [
-                "a) Using the TypeScript compiler (tsc)",
-                "b) Manually translating each line",
-                "c) Using a browser extension",
-                "d) TypeScript files are directly executed by browsers",
-            ],
-            correct_answer: "b) A programming language",
+            question: "Which command is used to install TypeScript globally via npm?",
+            options: {
+                a: "npm install -g ts",
+                b: "npm install -g typescript",
+                c: "npm install typescript",
+                d: "npm install ts",
+            },
+            answer: "npm install -g typescript",
         },
     ];
-    static #question_moderate = [
+    static moderateLevelQuestions = [
         {
-            question: "What is the purpose of TypeScript?",
-            options: [
-                "a) To add static typing to JavaScript",
-                "b) To replace JavaScript",
-                "c) To enhance HTML and CSS",
-                "d) To improve server-side scripting",
-            ],
-            correct_answer: "a) To add static typing to JavaScript",
+            question: "What is the purpose of 'strict' mode in TypeScript?",
+            options: {
+                a: "To enforce stricter syntax rules",
+                b: "To disable type checking",
+                c: "To allow implicit type conversions",
+                d: "To remove all type annotations",
+            },
+            answer: "To enforce stricter syntax rules",
         },
         {
-            question: "What is the key difference between 'interface' and 'type' in TypeScript?",
-            options: [
-                "a) 'interface' can only be used for obj[]ects, while 'type' can be used for any data type",
-                "b) 'type' can only be used for obj[]ects, while 'interface' can be used for any data type",
-                "c) There is no difference; they can be used interchangeably",
-                "d) 'type' allows you to create union types, while 'interface' does not",
-            ],
-            correct_answer: "a) 'interface' can only be used for obj[]ects, while 'type' can be used for any data type",
+            question: "Which of the following is NOT a valid TypeScript primitive type?",
+            options: {
+                a: "string",
+                b: "number",
+                c: "boolean",
+                d: "array",
+            },
+            answer: "array",
         },
         {
-            question: "What is the basic data type to represent whole numbers in TypeScript?",
-            options: [
-                "a) A type that represents a single value",
-                "b) A type that represents multiple possible types for a variable",
-                "c) A type that represents a combination of two interfaces",
-                "d) A type that represents a combination of two classes",
-            ],
-            correct_answer: "b) A type that represents multiple possible types for a variable",
+            question: "What does the 'readonly' keyword do in TypeScript?",
+            options: {
+                a: "Allows write access to a property",
+                b: "Prevents changes to a property after initialization",
+                c: "Defines a constant variable",
+                d: "Removes a property from an object",
+            },
+            answer: "Prevents changes to a property after initialization",
         },
         {
-            question: "How do you define an array in TypeScript?",
-            options: [
-                "a) let arr: array = [];",
-                "b) let arr: Array = [];",
-                "c) let arr: any[] = [];",
-                "d) let arr: Array<any> = [];",
-            ],
-            correct_answer: "c) let arr: any[] = [];",
+            question: "What is the purpose of 'enums' in TypeScript?",
+            options: {
+                a: "To declare a variable with multiple types",
+                b: "To create a list of constants",
+                c: "To implement dynamic typing",
+                d: "To define asynchronous functions",
+            },
+            answer: "To declare a variable with multiple types",
         },
         {
-            question: "What does the 'as' keyword do in TypeScript?",
-            options: [
-                "a) It creates a new instance of a class",
-                "b) It performs type assertion",
-                "c) It defines an alias for a module",
-                "d) It represents a logical 'and' operation",
-            ],
-            correct_answer: "b) It performs type assertion",
+            question: "What is the 'unknown' type in TypeScript used for?",
+            options: {
+                a: "To declare variables with any type",
+                b: "To represent values that might exist",
+                c: "To denote a type that is not yet known",
+                d: "To enforce strict type checking",
+            },
+            answer: "To denote a type that is not yet known",
         },
         {
-            question: "What is the purpose of the 'readonly' modifier in TypeScript?",
-            options: [
-                "a) To make a property immutable after initialization",
-                "b) To prevent a class from being extended",
-                "c) To make a property writable after initialization",
-                "d) To allow only certain types to be assigned to a property",
-            ],
-            correct_answer: "a) To make a property immutable after initialization",
+            question: "Which operator is used for non-null assertion in TypeScript?",
+            options: {
+                a: "!!",
+                b: "??",
+                c: "!",
+                d: "?",
+            },
+            answer: "!",
         },
         {
-            question: "What is an 'index signature' in TypeScript?",
-            options: [
-                "a) It defines the index of an array",
-                "b) It defines the structure of an obj[]ect",
-                "c) It specifies the return type of a function",
-                "d) It allows you to define the types of keys that an obj[]ect can have",
-            ],
-            correct_answer: "d) It allows you to define the types of keys that an obj[]ect can have",
+            question: "What is the purpose of 'abstract' classes in TypeScript?",
+            options: {
+                a: "To create objects directly",
+                b: "To provide a blueprint for other classes to extend",
+                c: "To define static methods",
+                d: "To enforce encapsulation",
+            },
+            answer: "To provide a blueprint for other classes to extend",
         },
         {
-            question: "What is a 'declaration merging' in TypeScript?",
-            options: [
-                "a) It allows you to merge multiple files into one",
-                "b) It combines multiple type declarations with the same name into a single declaration",
-                "c) It merges interfaces with classes",
-                "d) It merges imported modules with the local namespace",
-            ],
-            correct_answer: "b) It combines multiple type declarations with the same name into a single declaration",
+            question: "What is the output of typeof null in TypeScript?",
+            options: {
+                a: "'null'",
+                b: "'object'",
+                c: "'undefined'",
+                d: "'null' is not recognized",
+            },
+            answer: "'object'",
         },
         {
-            question: "How do you declare an optional parameter in a function in TypeScript?",
-            options: [
-                "a) function myFunction(param: optional string) {}",
-                "b) function myFunction(param?: string) {}",
-                "c) function myFunction(param: string?) {}",
-                "d) function myFunction(param: string = null) {}",
-            ],
-            correct_answer: "b) function myFunction(param?: string) {}",
+            question: "What does 'never' type represent in TypeScript?",
+            options: {
+                a: "A type for functions that never return",
+                b: "A type for variables that are constantly changing",
+                c: "A type for values that will never occur",
+                d: "A type for optional properties",
+            },
+            answer: "A type for values that will never occur",
         },
         {
-            question: "What is the purpose of the 'namespace' keyword in TypeScript?",
-            options: [
-                "a) To define a block of code that can be reused in different parts of the program",
-                "b) To declare a module with its dependencies",
-                "c) To group related types, interfaces, functions, and classes",
-                "d) To specify the accessibility of a variable or function",
-            ],
-            correct_answer: "c) To group related types, interfaces, functions, and classes",
-        },
-    ];
-    static #question_advanced = [
-        {
-            question: "What are generics in TypeScript and how are they used?",
-            options: [
-                "a) Generics are a feature that allows defining classes with both private and public members.",
-                "b) Generics are a way to define static methods in TypeScript.",
-                "c) Generics allow types to be parameterized by other types, enabling the creation of reusable, type-safe components.",
-                "d) Generics are a mechanism to create asynchronous functions in TypeScript.",
-            ],
-            correct_answer: "c) Generics allow types to be parameterized by other types, enabling the creation of reusable, type-safe components.",
-        },
-        {
-            question: "Explain the difference between ambient declarations and regular declarations in TypeScript.",
-            options: [
-                "a) Ambient declarations are used for internal types, while regular declarations are used for external types.",
-                "b) Regular declarations are used for existing JavaScript code, while ambient declarations are used for TypeScript code.",
-                "c) Regular declarations are included in the generated JavaScript code, while ambient declarations are not.",
-                "d) Ambient declarations are used to declare types for existing JavaScript code or external libraries without providing their implementation, while regular declarations are used within TypeScript code.",
-            ],
-            correct_answer: "d) Ambient declarations are used to declare types for existing JavaScript code or external libraries without providing their implementation, while regular declarations are used within TypeScript code.",
-        },
-        {
-            question: "How does TypeScript handle runtime type checking compared to compile-time type checking?",
-            options: [
-                "a) TypeScript performs runtime type checking using reflection.",
-                "b) TypeScript performs both runtime and compile-time type checking with equal emphasis.",
-                "c) TypeScript primarily performs type checking at compile time, ensuring type safety during development.",
-                "d) TypeScript relies solely on runtime type checking and does not perform any compile-time checks.",
-            ],
-            correct_answer: "c) TypeScript primarily performs type checking at compile time, ensuring type safety during development.",
-        },
-        {
-            question: "What is the purpose of mapped types in TypeScript and provide an example of usage?",
-            options: [
-                "a) Mapped types allow the creation of new types by transforming properties of an existing type. Example: { [P in keyof T]: T[P] | null }.",
-                "b) Mapped types are used for defining complex regular expressions in TypeScript.",
-                "c) Mapped types allow the creation of new types by combining two existing types using the & operator.",
-                "d) Mapped types are used for creating dynamic arrays in TypeScript.",
-            ],
-            correct_answer: "a) Mapped types allow the creation of new types by transforming properties of an existing type. Example: { [P in keyof T]: T[P] | null }.",
-        },
-        {
-            question: "Describe what conditional types are in TypeScript and how they can be used to create flexible type definitions.",
-            options: [
-                "a) Conditional types are used to perform type conversions based on runtime conditions.",
-                "b) Conditional types allow the selection of types based on the evaluation of a condition, enabling flexible type definitions.",
-                "c) Conditional types are used to define types that are only valid under certain conditions.",
-                "d) Conditional types are a TypeScript feature that allows defining types for switch-case statements.",
-            ],
-            correct_answer: "b) Conditional types allow the selection of types based on the evaluation of a condition, enabling flexible type definitions.",
-        },
-        {
-            question: "Explain the concept of type inference in TypeScript and provide an example.",
-            options: [
-                "a) Type inference refers to the process of automatically inferring the types of variables, functions, and expressions based on their usage. Example: let x = 10;.",
-                "b) Type inference is a mechanism for dynamically changing the types of variables at runtime. Example: let x: any = 10;.",
-                "c) Type inference is a way to enforce strict type declarations in TypeScript without relying on the compiler. Example: let x: number = 10;.",
-                "d) Type inference is a feature that allows TypeScript to infer types from comments provided in the code. ",
-            ],
-            correct_answer: "a) Type inference refers to the process of automatically inferring the types of variables, functions, and expressions based on their usage. Example: let x = 10;.",
-        },
-        {
-            question: "What is a type guard in TypeScript? Provide an example of how it can be implemented.",
-            options: [
-                "a) A type guard is a mechanism for restricting the types of parameters passed to a function. Example: function isString(value: any): value is string { return typeof value === 'string'; }.",
-                "b) A type guard is a feature used to enforce strict typing in TypeScript classes. Example: class MyClass { constructor(private value: string) {} }.",
-                "c) A type guard is a method for preventing certain types of errors in TypeScript code. Example: if (typeof value === 'string') { /* handle string value */ }.",
-                "d) A type guard is a tool for ensuring that asynchronous functions return the expected types. Example: async function fetchData(): Promise<string> { /* implementation */ }.",
-            ],
-            correct_answer: "a) A type guard is a mechanism for restricting the types of parameters passed to a function. Example: function isString(value: any): value is string { return typeof value === 'string'; }.",
-        },
-        {
-            question: "Describe what type erasure is in TypeScript and its implications for runtime behavior.",
-            options: [
-                "a) Type erasure is the process of removing type annotations from TypeScript code to improve performance. Example: let x: number = 10; is transformed to let x = 10;.",
-                "b) Type erasure is a feature that allows TypeScript to handle types dynamically at runtime. Example: let x: any = 10; retains its type information during execution.",
-                "c) Type erasure refers to the removal of type information during compilation, meaning TypeScript types are not available at runtime. Example: let x: number = 10; is compiled to JavaScript without any type information.",
-                "d) Type erasure is the process of converting TypeScript code to a more efficient representation at runtime. Example: let x: number = 10; is transformed to a more optimized form during execution.",
-            ],
-            correct_answer: "c) Type erasure refers to the removal of type information during compilation, meaning TypeScript types are not available at runtime. Example: let x: number = 10; is compiled to JavaScript without any type information.",
-        },
-        {
-            question: "What are decorator functions in TypeScript and how are they used in the context of classes?",
-            options: [
-                "a) Decorator functions are functions used for validating function parameters in TypeScript. Example: function validate(target: any, key: string, descriptor: PropertyDescriptor) { /* implementation */ }.",
-                "b) Decorator functions are used for dynamically extending the behavior of classes, methods, properties, or parameters in TypeScript. Example: @validate class MyClass { /* implementation */ }.",
-                "c) Decorator functions are a feature for optimizing class inheritance in TypeScript. Example: @sealed class MyClass { /* implementation */ }.",
-                "d) Decorator functions are a tool for optimizing memory usage in TypeScript applications. Example: @memoize class MyClass { /* implementation */ }.",
-            ],
-            correct_answer: "b) Decorator functions are used for dynamically extending the behavior of classes, methods, properties, or parameters in TypeScript. Example: @validate class MyClass { /* implementation */ }.",
-        },
-        {
-            question: "Explain the concept of covariance and contravariance in TypeScript with respect to function parameters and return types.",
-            options: [
-                "a) Covariance refers to the ability of a function to accept parameters of a narrower type, while contravariance refers to the ability to return a broader type. Example: let fn: (arg: Animal) => void = (arg: Dog) => { /* implementation */ };.",
-                "b) Covariance refers to the ability of a function to accept parameters of a broader type, while contravariance refers to the ability to return a narrower type. Example: let fn: (arg: Dog) => void = (arg: Animal) => { /* implementation */ };.",
-                "c) Covariance refers to the ability of a function to accept parameters of the same type, while contravariance refers to the ability to return a different type. Example: let fn: (arg: T) => void = (arg: U) => { /* implementation */ };.",
-                "d) Covariance refers to the ability of a function to accept parameters of a different type, while contravariance refers to the ability to return the same type. Example: let fn: (arg: T) => void = (arg: U) => { /* implementation */ };.",
-            ],
-            correct_answer: "b) Covariance refers to the ability of a function to accept parameters of a broader type, while contravariance refers to the ability to return a narrower type. Example: let fn: (arg: Dog) => void = (arg: Animal) => { /* implementation */ };.",
+            question: "Which TypeScript feature allows you to specify multiple types for a variable?",
+            options: {
+                a: "Generics",
+                b: "Interfaces",
+                c: "Unions",
+                d: "Enums",
+            },
+            answer: "Unions",
         },
     ];
-    static async #prompt(args) {
+    static hardLevelQuestions = [
+        {
+            question: "What is a 'tuple' in TypeScript?",
+            options: {
+                a: "A data structure that holds a single value",
+                b: "An array with a fixed number of elements whose types are known",
+                c: "A function that returns multiple values",
+                d: "A method for asynchronous operations",
+            },
+            answer: "An array with a fixed number of elements whose types are known",
+        },
+        {
+            question: "What is the purpose of 'never' type in TypeScript?",
+            options: {
+                a: "To declare a variable that never changes",
+                b: "To represent a value that will never occur",
+                c: "To create an infinite loop",
+                d: "To denote a variable with unknown type",
+            },
+            answer: "To represent a value that will never occur",
+        },
+        {
+            question: "What is a 'mapped type' in TypeScript?",
+            options: {
+                a: "A type that maps one data structure to another",
+                b: "A type that iterates over each property of another type",
+                c: "A type that maps values to their corresponding keys",
+                d: "A type that generates new types based on existing ones",
+            },
+            answer: "A type that generates new types based on existing ones",
+        },
+        {
+            question: "What is 'structural typing' in TypeScript?",
+            options: {
+                a: "A typing system based on structural engineering principles",
+                b: "A typing system where type compatibility is based on the structure of the types",
+                c: "A typing system used exclusively for user-defined structures",
+                d: "A typing system that prioritizes inheritance over composition",
+            },
+            answer: "A typing system where type compatibility is based on the structure of the types",
+        },
+        {
+            question: "What is the purpose of 'namespace' in TypeScript?",
+            options: {
+                a: "To define a scope for a set of related functionalities",
+                b: "To specify the visibility of class members",
+                c: "To create aliases for complex type names",
+                d: "To enforce encapsulation",
+            },
+            answer: "To define a scope for a set of related functionalities",
+        },
+        {
+            question: "What is 'declaration merging' in TypeScript?",
+            options: {
+                a: "Combining multiple type definitions into one",
+                b: "Merging variable declarations with different types",
+                c: "Declaring functions within interfaces",
+                d: "Declaring variables with the same name in different scopes",
+            },
+            answer: "Combining multiple type definitions into one",
+        },
+        {
+            question: "What is the purpose of 'never' keyword in function return type?",
+            options: {
+                a: "To indicate that the function will never return",
+                b: "To enforce a strict return type",
+                c: "To denote that the function can return null or undefined",
+                d: "To ensure that the function returns a value",
+            },
+            answer: "To indicate that the function will never return",
+        },
+        {
+            question: "What is the output of 'null == undefined' in TypeScript?",
+            options: {
+                a: "true",
+                b: "false",
+                c: "undefined",
+                d: "null",
+            },
+            answer: "true",
+        },
+        {
+            question: "What is 'TypeScript Compiler API' used for?",
+            options: {
+                a: "To transform TypeScript code to JavaScript",
+                b: "To provide type information at runtime",
+                c: "To create custom tooling for working with TypeScript",
+                d: "To optimize performance of TypeScript applications",
+            },
+            answer: "To create custom tooling for working with TypeScript",
+        },
+        {
+            question: "Which of the following is NOT a TypeScript access modifier?",
+            options: {
+                a: "public",
+                b: "private",
+                c: "protected",
+                d: "static",
+            },
+            answer: "static",
+        },
+    ];
+    static async quiz(args) {
         let score = 0;
-        for (const obj of args) {
-            let { input } = await inquirer.prompt({
-                name: "input",
-                type: "list",
-                message: obj.question,
-                choices: obj.options,
-            });
-            let loader = animation.radar(`.`.repeat(80));
-            await Animate_Banner.sleep(1500);
-            loader.stop();
-            if (input === obj.correct_answer) {
-                console.log(chalk.greenBright("You have selected a correct answer."));
-                score += 10;
-                console.log(`Your score is increased by 10 and now the score is ${score}.`);
+        let line = `~`.repeat(70);
+        for (const index in args) {
+            let input = await System.promptList(args[index].question, Object.values(args[index].options), `${index + 1}.`);
+            const loader = ora("Checking Answer...").start();
+            await Animate_Banner.sleep(2000);
+            switch (input) {
+                case args[index].answer:
+                    System.print(`\n`);
+                    loader.succeed(chalk.greenBright("You have selected a correct answer."));
+                    score += 5;
+                    System.print(chalk.cyanBright(`  Your score is increased by 5 points and now the score is ${score}.`));
+                    break;
+                default:
+                    System.print(`\n`);
+                    loader.fail(chalk.redBright("You have selected a wrong answer."));
+                    System.print(chalk.cyanBright(`The correct answer is ${args[index].answer}`));
+                    break;
             }
-            else {
-                console.log(chalk.redBright("You have selected a wrong answer."));
-                console.log(chalk.cyanBright(`The correct answer is ${obj.correct_answer}`));
-            }
+            System.print(`\n`);
+            await Animate_Banner.sleep(4000);
+            console.clear();
         }
-        console.log(`Your score is ${score}.`);
+        System.print((chalk.bgYellowBright.bold.black)(`\n${line}`));
+        System.print((chalk.bgYellowBright.bold.black)(`Your score is ${score} points.`));
+        System.print((chalk.bgYellowBright.bold.black)(`${line}\n`));
+        if (score === 50) {
+            System.print((chalk.bgGreenBright.bold.black)(`\n${line}`));
+            System.print((chalk.bgGreenBright.bold.black)(`Congratulations, you won the quiz!`));
+            System.print((chalk.bgGreenBright.bold.black)(`${line}\n`));
+        }
+        else if (score >= 15) {
+            System.print((chalk.bgRgb(255, 165, 0).bold.black)(`\n${line}`));
+            System.print((chalk.bgRgb(255, 165, 0).bold.black)(`"Your fair score reflects your dedication and understanding of the quiz content. Well done!`));
+            System.print((chalk.bgRgb(255, 165, 0).bold.black)(`${line}\n`));
+        }
+        else {
+            System.print((chalk.bgRedBright.bold.black)(`\n${line}`));
+            System.print((chalk.bgRedBright.bold.black)(`For your effort, thank you. Though you did not win this time, your participation is appreciated.!`));
+            System.print((chalk.bgRedBright.bold.black)(`${line}\n`));
+        }
     }
     static async main() {
         let Level;
         (function (Level) {
-            Level["1_"] = "Simple";
-            Level["2_"] = "Moderate";
-            Level["3_"] = "Hard";
+            Level["I"] = "Simple";
+            Level["II"] = "Moderate";
+            Level["III"] = "Hard";
         })(Level || (Level = {}));
         await Animate_Banner.rainbow_title();
-        let bool = true;
-        while (bool) {
-            let { level } = await inquirer.prompt({
-                name: "level",
-                type: "list",
-                message: "Please select level!",
-                choices: [Level["1_"], Level["2_"], Level["3_"]],
-            });
+        let running = true;
+        while (running) {
+            let level = await System.promptList("Please select level!", Object.values(Level), '🎚️');
+            await Animate_Banner.sleep(2000);
+            console.clear();
             switch (level) {
-                case Level["1_"]:
-                    await Main.#prompt(Main.#question_simple);
+                case Level["I"]:
+                    await Main.quiz(Main.simpleLevelQuestions);
                     break;
-                case Level["2_"]:
-                    await Main.#prompt(Main.#question_moderate);
+                case Level["II"]:
+                    await Main.quiz(Main.moderateLevelQuestions);
                     break;
-                case Level["3_"]:
-                    await Main.#prompt(Main.#question_advanced);
+                case Level["III"]:
+                    await Main.quiz(Main.hardLevelQuestions);
                     break;
             }
-            let { continueOrExit } = await inquirer.prompt({
-                name: "continueOrExit",
-                type: "confirm",
-                message: "Do you want to continue?",
-            });
-            bool = continueOrExit;
+            running = await System.promptConfirm();
         }
     }
 }

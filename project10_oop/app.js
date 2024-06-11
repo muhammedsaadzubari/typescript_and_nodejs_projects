@@ -2,143 +2,112 @@
 import inquirer from "inquirer";
 import chalk from "chalk";
 import animation from "chalk-animation";
-class AnimateBanner {
-    static banner = `
-    Welcome to my OOP Progam! 
-                        
-    
-        OOOOOOOOO          OOOOOOOOO     PPPPPPPPPPPPPPPPP   
-      OO:::::::::OO      OO:::::::::OO   P::::::::::::::::P0
-    OO:::::::::::::OO  OO:::::::::::::OO P::::::PPPPPP:::::P0
-    O:::::::OOO:::::::OO:::::::OOO:::::::OPP:::::P     P:::::P
-    O::::::O   O::::::OO::::::O   O::::::O  P::::P     P:::::P
-    O:::::O     O:::::OO:::::O     O:::::O  P::::P     P:::::P
-    O:::::O     O:::::OO:::::O     O:::::O  P::::PPPPPP:::::P 
-    O:::::O     O:::::OO:::::O     O:::::O  P:::::::::::::PP  
-    O:::::O     O:::::OO:::::O     O:::::O  P::::PPPPPPPPP    
-    O:::::O     O:::::OO:::::O     O:::::O  P::::P            
-    O:::::O     O:::::OO:::::O     O:::::O  P::::P            
-    O::::::O   O::::::OO::::::O   O::::::O  P::::P            
-    O:::::::OOO:::::::OO:::::::OOO:::::::OPP::::::PP          
-    OO:::::::::::::OO  OO:::::::::::::OO P::::::::P          
-    OO:::::::::OO      OO:::::::::OO   P::::::::P          
-       OOOOOOOOO          OOOOOOOOO     PPPPPPPPPP          
-      
-      \n
-      Developed by MUHAMMED SAAD \n\n`;
-    static sleep(ms) {
-        return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-    static async rainbowTitle() {
-        const addRainbowTitle = animation.rainbow(AnimateBanner.banner); // Corrected method name to 'rainbowString'
-        await AnimateBanner.sleep(2000);
-        addRainbowTitle.stop();
-    }
-}
 var OOP_Introduction_Explained;
 (function (OOP_Introduction_Explained) {
+    const print = (...messages) => {
+        console.log(...messages);
+    };
+    class AnimateBanner {
+        static banner = "TypeScript And NodeJs Projects\n\nProject #10: Object-Oriented Promgramming\n\nDeveloped by MUHAMMED SAAD \n\n";
+        static sleep(ms) {
+            return new Promise((res) => setTimeout(res, ms));
+        }
+        static async rainbowTitle() {
+            let add_rainbow_title = animation.rainbow(this.banner);
+            await AnimateBanner.sleep(2000);
+            add_rainbow_title.stop();
+        }
+    }
+    OOP_Introduction_Explained.AnimateBanner = AnimateBanner;
     class Person {
-        // Declare a field to represent the personality
         personality;
         sentence;
-        // Constructor
         constructor() {
             this.personality = "Mystery";
-            this.sentence =
-                "Mystery shrouds the truth, inviting intrigue and curiosity.";
+            this.sentence = "Mystery shrouds the truth, inviting intrigue and curiosity.";
         }
-        AskQuestion(answer) {
-            if (answer === 1) {
-                this.personality = "Extravert";
-                this.sentence = "Extroverts feel energized by socializing.";
-            }
-            else if (answer === 2) {
-                this.personality = "Introvert";
-                this.sentence = "Introverts find solace in moments of solitude.";
-            }
-            else {
-                this.personality = "You are still a Mystery";
+        askQuestion(answer) {
+            switch (answer) {
+                case 1:
+                    this.personality = "Extravert";
+                    this.sentence = "Extroverts feel energized by socializing.";
+                    break;
+                case 2:
+                    this.personality = "Introvert";
+                    this.sentence = "Introverts find solace in moments of solitude.";
+                    break;
             }
         }
-        // This method returns the value of the Personality
-        GetPersonality() {
+        getPersonality() {
             return this.personality;
         }
-        GetSentence() {
+        getSentence() {
             return this.sentence;
         }
     }
     OOP_Introduction_Explained.Person = Person;
-    class Program {
-        static async Main(args) {
-            let input1;
-            input1 = await inquirer.prompt({
-                name: "input1",
-                type: "number",
-                message: "Type 1 if you like to talk to others and type 2 if you would rather keep to yourself",
-            });
-            if (isNaN(input1.input1)) {
-                throw new Error("Please enter an integer value!");
-            }
-            let MyPerson = new OOP_Introduction_Explained.Person();
-            MyPerson.AskQuestion(input1.input1);
-            console.log(chalk.bold(chalk.bgYellowBright(`You are: ${MyPerson.GetPersonality()}`)));
-            console.log(chalk.bold(chalk.bgBlueBright(`${MyPerson.GetSentence()}`)));
-            let input2;
-            input2 = await inquirer.prompt({
-                name: "input2",
-                type: "input",
-                message: "What is your name?",
-            });
-            let MyStudent = new OOP_Introduction_Explained.Student();
-            MyStudent.Name = input2.input2;
-            console.log(chalk.bgGreenBright(chalk.bold(`Your name is '${MyStudent.Name}' and your personality type is '${MyStudent.GetPersonality()}'`)));
-            console.log(chalk.bold(chalk.bgCyanBright(`${MyStudent.GetSentence()}`)));
-        }
-    }
-    OOP_Introduction_Explained.Program = Program;
-    // Here we can either write or read data to this class
-    class Student extends OOP_Introduction_Explained.Person {
-        // private field (backing field) hold any data assigned Name property
+    class Student extends Person {
         _name;
         constructor() {
             super();
             this._name = "";
         }
-        // This is the Name Property
-        // use the Get accessor to read data from the class
-        get Name() {
+        get name() {
             return this._name;
         }
-        // The value property of the set accessor is automatically created by the compiler
-        set Name(value) {
+        set name(value) {
             this._name = value;
         }
     }
     OOP_Introduction_Explained.Student = Student;
-})(OOP_Introduction_Explained || (OOP_Introduction_Explained = {}));
-(async () => {
-    await AnimateBanner.rainbowTitle();
-    let bool = true;
-    while (bool) {
-        try {
-            await OOP_Introduction_Explained.Program.Main();
-            let { prompt } = await inquirer.prompt({
-                name: "prompt",
-                type: "confirm",
-                message: "Do you want to continue?",
+    class Program {
+        static async program() {
+            let { inputForPersonality } = await inquirer.prompt({
+                name: "inputForPersonality",
+                type: "list",
+                message: "Select 1 if you like to talk to others and select 2 if you would rather keep to yourself",
+                choices: ["1", "2"]
             });
-            bool = prompt;
-        }
-        catch (error) {
-            console.error(error.message);
-            let { prompt } = await inquirer.prompt({
-                name: "prompt",
-                type: "confirm",
-                message: "Do you want to continue?",
+            let myPerson = new Person();
+            myPerson.askQuestion(inputForPersonality);
+            print((chalk.bgYellowBright.bold)(`You are: '${myPerson.getPersonality()}'`));
+            print((chalk.bgCyanBright.bold)(myPerson.getSentence()));
+            let { inputForName } = await inquirer.prompt({
+                name: "inputForName",
+                type: "input",
+                message: "What is your name?",
+                validate: (inputForName) => {
+                    if (inputForName.trim() !== "") {
+                        return true;
+                    }
+                    else {
+                        return "Enter valid name!";
+                    }
+                }
             });
-            bool = prompt;
+            let myStudent = new Student();
+            myStudent.name = inputForName;
+            print((chalk.bgGreenBright.bold)(`Your name is '${myStudent.name}' and your personality type is '${myStudent.getPersonality()}'`));
+            print((chalk.bgBlueBright.bold)(myStudent.getSentence()));
         }
     }
-    console.log(chalk.bgRedBright(chalk.bold("Exiting...")));
-})();
+    OOP_Introduction_Explained.Program = Program;
+    class Main {
+        static async main() {
+            await AnimateBanner.rainbowTitle();
+            let running = true;
+            while (running) {
+                await Program.program();
+                let { confirm } = await inquirer.prompt({
+                    name: "confirm",
+                    type: "confirm",
+                    message: "Do you want to continue?"
+                });
+                running = confirm;
+            }
+            print((chalk.bgRedBright.bold)("Exiting..."));
+        }
+    }
+    OOP_Introduction_Explained.Main = Main;
+})(OOP_Introduction_Explained || (OOP_Introduction_Explained = {}));
+OOP_Introduction_Explained.Main.main();

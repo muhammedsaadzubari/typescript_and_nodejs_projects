@@ -4,157 +4,124 @@ import inquirer from "inquirer";
 import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
 
-const sleepAndStart = () => {
-  return new Promise((res) => {
-    setTimeout(res, 2000);
+const sleep = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
   });
 };
 
-async function rainbowTitle() {
-  let addRainbowTitle = chalkAnimation.rainbow(`
-    Let's start calculation \n
-     _____________________
-    |  _________________  |
-    | | @Saad        0. | |
-    | |_________________| |
-    |  ___ ___ ___   ___  |
-    | | 7 | 8 | 9 | | + | |
-    | |___|___|___| |___| |
-    | | 4 | 5 | 6 | | - | |
-    | |___|___|___| |___| |
-    | | 1 | 2 | 3 | | x | |
-    | |___|___|___| |___| |
-    | | . | 0 | = | | / | |
-    | |___|___|___| |___| |
-    | | x^| √ |Off| | C | |
-    | |___|___|___| |___| |
-    |_____________________| \n
-
-    Develop By MUHAMMED SAAD \n\n
-    `);
-  await sleepAndStart();
-  addRainbowTitle.stop();
+async function showRainbowTitle() {
+  let rainbowTitleAnimation = chalkAnimation.rainbow(
+    "TypeScript And NodeJs Projects\n\nProject #00: Calculator\n\nDeveloped by MUHAMMED SAAD \n\n"
+  );
+  await sleep();
+  rainbowTitleAnimation.stop();
 }
 
-await rainbowTitle();
-let result: number;
-  
-async function askQuestion() {
-  const answers = await inquirer.prompt([
-    {
+let prompt = {
+  promptTypeNumber: async (message: string) => {
+    while (true) {
+      var { prompt } = await inquirer.prompt({
+        name: "prompt",
+        type: "number",
+        message,
+      });
+      if (!isNaN(prompt)) {
+        break;
+      }else{
+        console.log((chalk.redBright)("Enter an integer value!"));
+      }
+    }
+    return prompt;
+  },
+  promptTypeList: async (message: string, choices: string[]) => {
+    let { prompt } = await inquirer.prompt({
+      name: "prompt",
       type: "list",
-      name: "Operator",
-      message: "Which operation do you want to perform?",
-      choices: [
-        "+ Addition",
-        "- Subtraction",
-        "* Multiplication",
-        "/ Division",
-        "^ Power",
-        "√ Square Root",
-        "% Modules",
-      ],
-    },
-    {
-      type: "number",
-      name: "num1",
-      message: "Enter the number:",
-    },
-    {
-      type: "number",
-      name: "exponent",
-      message: "Enter the exponent:",
-      when: (answers) => answers.Operator === "^ Power",
-    },
-    {
-      type: "number",
-      name: "num2",
-      message: "Enter the number:",
-      when: (answers) => answers.Operator === "- Subtraction",
-    },
-    {
-      type: "number",
-      name: "num2",
-      message: "Enter the number:",
-      when: (answers) => answers.Operator === "+ Addition",
-    },
-    {
-      type: "number",
-      name: "num2",
-      message: "Enter the number:",
-      when: (answers) => answers.Operator === "* Multiplication",
-    },
-    {
-      type: "number",
-      name: "num2",
-      message: "Enter the number",
-      when: (answers) => answers.Operator === "/ Division",
-    },
-    {
-      type: "number",
-      name: "num2",
-      message: "Enter the number",
-      when: (answers) => answers.Operator === "% Modules",
-    },
-  ]);
-
-  switch (answers.Operator) {
+      message,
+      choices,
+    });
+    return prompt;
+  },
+  promptTypeConfirm: async () => {
+    let { prompt } = await inquirer.prompt({
+      name: "prompt",
+      type: "confirm",
+      message: "Do you want to continue?",
+    });
+    return prompt;
+  },
+};
+let choices: string[] = [
+  "+ Addition",
+  "- Subtraction",
+  "* Multiplication",
+  "/ Division",
+  "^ Power",
+  "√ Square Root",
+  "% Modules",
+];
+async function askQuestion() {
+  let operator = await prompt.promptTypeList(
+    "Select operation you want to perform!",
+    choices
+  );
+  switch (operator) {
     case "+ Addition":
-      result = answers.num1 + answers.num2;
+      let num1Add = await prompt.promptTypeNumber("Enter the First Number!");
+      let num2Add = await prompt.promptTypeNumber("Enter the Second Number!");
       console.log(
-        chalk.blueBright(`${answers.num1} + ${answers.num2} = ${result}`)
+        chalk.blueBright(`${num1Add} + ${num2Add} = ${num1Add + num2Add}`)
       );
       break;
     case "- Subtraction":
-      result = answers.num1 - answers.num2;
+      let num1Sub = await prompt.promptTypeNumber("Enter the First Number!");
+      let num2Sub = await prompt.promptTypeNumber("Enter the Second Number!");
       console.log(
-        chalk.blueBright(`${answers.num1} - ${answers.num2} = ${result}`)
+        chalk.blueBright(`${num1Sub} - ${num2Sub} = ${num1Sub - num2Sub}`)
       );
       break;
     case "* Multiplication":
-      result = answers.num1 * answers.num2;
+      let num1Mul = await prompt.promptTypeNumber("Enter the First Number!");
+      let num2Mul = await prompt.promptTypeNumber("Enter the Second Number!");
       console.log(
-        chalk.blueBright(`${answers.num1} * ${answers.num2} = ${result}`)
+        chalk.blueBright(`${num1Mul} * ${num2Mul} = ${num1Mul * num2Mul}`)
       );
       break;
     case "/ Division":
-      result = answers.num1 / answers.num2;
+      let num1Div = await prompt.promptTypeNumber("Enter the First Number!");
+      let num2Div = await prompt.promptTypeNumber("Enter the Second Number!");
       console.log(
-        chalk.blueBright(`${answers.num1} / ${answers.num2} = ${result}`)
+        chalk.blueBright(`${num1Div} / ${num2Div} = ${num1Div / num2Div}`)
       );
       break;
     case "^ Power":
-      result = Math.pow(answers.num1, answers.exponent);
+      let num1Pow = await prompt.promptTypeNumber("Enter the Base!");
+      let num2Pow = await prompt.promptTypeNumber("Enter the Exponent!");
       console.log(
-        chalk.blueBright(`${answers.num1} ^ ${answers.exponent} = ${result}`)
+        chalk.blueBright(
+          `${num1Pow} ^ ${num2Pow} = ${Math.pow(num1Pow, num2Pow)}`
+        )
       );
       break;
     case "√ Square Root":
-      result = Math.sqrt(answers.num1);
-      console.log(chalk.blueBright(`√${answers.num1} = ${result}`));
+      let num1Sqrt = await prompt.promptTypeNumber("Enter the First number!");
+      console.log(chalk.blueBright(`√${num1Sqrt} = ${Math.sqrt(num1Sqrt)}`));
       break;
     case "% Modules":
-      result = answers.num1 % answers.num2;
+      let num1Mod = await prompt.promptTypeNumber("Enter the First Number!");
+      let num2Mod = await prompt.promptTypeNumber("Enter the Second Number!");
       console.log(
-        chalk.blueBright(`${answers.num1} % ${answers.num2} = ${result}`)
+        chalk.blueBright(`${num1Mod} % ${num2Mod} = ${num1Mod % num2Mod}`)
       );
-      break;
-    default:
-      console.log("Please select a correct operator!");
   }
-  console.log(result);
 }
 
-async function startAgain() {
-  do {
+(async () => {
+  let bool = true;
+  await showRainbowTitle();
+  while (bool) {
     await askQuestion();
-    var restart = await inquirer.prompt({
-      type: "list",
-      name: "recoco",
-      message:
-        "Do you want to continue? Select 'Yes' to restart , 'No' to close:",
-      choices: ["Yes", "No"],
-    });
-  } while (restart.recoco === "Yes");
-}
-startAgain();
+    bool = await prompt.promptTypeConfirm();
+  }
+})();

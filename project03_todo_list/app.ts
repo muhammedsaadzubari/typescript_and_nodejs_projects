@@ -5,171 +5,196 @@ import chalk from "chalk";
 import chalkAnimation from "chalk-animation";
 
 let todoList: string[] = [];
-
-async function sleep() {
-  return new Promise<void>((resolve) => setTimeout(resolve, 2000));
+enum Operation {
+  Add_Tasks = "Add Tasks",
+  Edit_Tasks = "Edit Tasks",
+  Delete_Tasks = "Delete Tasks",
+  Mark_As_Done = "Mark As Done",
+  View_List = "View List",
+  Exit = "Exit",
 }
-
-// Function to animate title
-async function rainbowTitle() {
-  const addRainbowTitle = chalkAnimation.rainbow(`
-  Let's MANAGE our TODOS! \n
-  
-░▒▓████████▓▒░▒▓██████▓▒░       ░▒▓███████▓▒░ ░▒▓██████▓▒░       ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓███████▓▒░▒▓████████▓▒░ 
-   ░▒▓█▓▒░  ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░         ░▒▓█▓▒░     
-   ░▒▓█▓▒░  ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░▒▓█▓▒░         ░▒▓█▓▒░     
-   ░▒▓█▓▒░  ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓██████▓▒░   ░▒▓█▓▒░     
-   ░▒▓█▓▒░  ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░  ░▒▓█▓▒░     
-   ░▒▓█▓▒░  ░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░      ░▒▓█▓▒░  ░▒▓█▓▒░     
-   ░▒▓█▓▒░   ░▒▓██████▓▒░       ░▒▓███████▓▒░ ░▒▓██████▓▒░       ░▒▓████████▓▒░▒▓█▓▒░▒▓███████▓▒░   ░▒▓█▓▒░         
-  
-  Developed by MUHAMMED SAAD \n\n
-  `);
-  await sleep();
-  addRainbowTitle.stop();
-}
-
-async function operationFn() {
-  const operationPrompt = await inquirer.prompt<{ operation: string }>({
-    name: "operation",
-    message: (chalk.blue.bold) ("Select operation to perform:"),
-    type: "list",
-    choices: ["Add Tasks", "Edit Tasks", "Delete Tasks", "Mark As Done", "View List", "Exit"],
+const print = (...message: any[]) => {
+  console.log(...message);
+};
+const sleep = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
   });
-  return operationPrompt.operation;
+};
+const title = async () => {
+  let rainbowTitleAnimation = chalkAnimation.rainbow(
+    "TypeScript And NodeJs Projects\n\nProject #03: TODO List\n\nDeveloped by MUHAMMED SAAD \n\n"
+  );
+  await sleep();
+  rainbowTitleAnimation.stop();
+};
+async function operationFn() {
+  const { operation } = await inquirer.prompt({
+    name: "operation",
+    message: "Select operation to perform:",
+    type: "list",
+    choices: [
+      "Add Tasks",
+      "Edit Tasks",
+      "Delete Tasks",
+      "Mark As Done",
+      "View List",
+      "Exit",
+    ],
+  });
+  return operation;
 }
 
 async function addTasksFn() {
-  const addTasksPrompt = await inquirer.prompt<{ addTasks: string }>({
+  const { addTasks } = await inquirer.prompt({
     name: "addTasks",
-    message: (chalk.blue) ("Enter your todo task:"),
+    message: "Enter your todo task:",
     type: "input",
   });
-  const { addTasks } = addTasksPrompt;
   if (addTasks.trim() !== "") {
     if (!todoList.includes(addTasks.trim())) {
       todoList.push(addTasks.trim());
-      console.log(chalk.gray(`The task ${chalk.whiteBright(addTasks)} was added succesfully!`))
+      print(
+        chalk.bgGreenBright.bold(
+          `The task ${chalk.whiteBright(addTasks)} was added succesfully!`
+        )
+      );
     } else {
-      console.log(chalk.yellow("This task already exists in the list."));
+      print(chalk.yellow("This task already exists in the list."));
     }
   } else {
-    console.log(chalk.yellow("Task description cannot be empty."));
+    print(chalk.yellow("Task description cannot be empty."));
   }
 }
-
 async function viewTasksFn() {
   if (todoList.length !== 0) {
-    console.log(chalk.bold("Your Todo List:"));
+    print(chalk.bold("Your Todo List:"));
     todoList.forEach((task, index) => {
-      console.log(`${index + 1}. ${task}`);
+      print(`${index + 1}. ${task}`);
     });
   } else {
-    console.log(chalk.yellow("You have no tasks to view."));
+    print(chalk.yellow("You have no tasks to view."));
   }
 }
-
 async function markedAsDone() {
-  if (todoList.length !== 0) {
-    const selectTaskPrompt = await inquirer.prompt<{ selectTasks: string[] }>({
+  if (
+    todoList.length !== 0 &&
+    todoList.filter((val) => !val.endsWith(" \u2714 DONE!")).length !== 0
+  ) {
+    const { selectTasks } = await inquirer.prompt<{ selectTasks: string[] }>({
       name: "selectTasks",
       type: "checkbox",
-      choices: todoList.map(task => (task)),
-      message: (chalk.blue) ("Select tasks to mark as done:"),
+      choices: todoList.filter((val) => !val.endsWith(" \u2714 DONE!")),
+      message: "Select tasks to mark as done:",
     });
-    const { selectTasks } = selectTaskPrompt;
     if (selectTasks.length !== 0) {
-      selectTasks.forEach(task => {
+      selectTasks.forEach((task) => {
         const index = todoList.indexOf(task);
-        if (!task.endsWith(" \u2714 DONE!")) {
-          todoList[index] += " \u2714 DONE!";
-          console.log(chalk.gray(`The task ${chalk.whiteBright(task)} was marked done succesfully!`))
-        } else {
-          console.log(chalk.yellow(`Task "${task}" is already marked as done.`));
-        }
+        todoList[index] += " \u2714 DONE!";
+        print(
+          chalk.bgGreenBright.bold(
+            `The task ${chalk.whiteBright(task)} was marked done succesfully!`
+          )
+        );
       });
     } else {
-      console.log(chalk.yellow("No tasks selected."));
+      print(chalk.yellow("No tasks selected."));
     }
   } else {
-    console.log(chalk.yellow("You currently do not have any tasks to mark."));
+    print(chalk.yellow("You currently do not have any tasks to mark."));
   }
 }
-
 async function deleteTasksFn() {
   if (todoList.length !== 0) {
-    const deleteTasksPrompt = await inquirer.prompt<{ deleteTasks: string[] }>({
+    const { deleteTasks } = await inquirer.prompt({
       name: "deleteTasks",
       type: "checkbox",
-      message: (chalk.blue) ("Select tasks to delete:"),
-      choices: todoList.map(task => (task)),
+      message: "Select tasks to delete:",
+      choices: [...todoList],
     });
-    const { deleteTasks } = deleteTasksPrompt;
     if (deleteTasks.length !== 0) {
-      deleteTasks.forEach(task => {
+      deleteTasks.forEach((task: string) => {
         const index = todoList.indexOf(task);
         todoList.splice(index, 1);
-        console.log(chalk.gray(`The tasks ${chalk.whiteBright(deleteTasks)} was deleted succesfully!`))
+        print(
+          chalk.bgGreenBright.bold(
+            `The tasks ${chalk.whiteBright(
+              deleteTasks
+            )} was deleted succesfully!`
+          )
+        );
       });
     } else {
-      console.log(chalk.yellow("No tasks selected for deletion."));
+      print(chalk.yellow("No tasks selected for deletion."));
     }
   } else {
-    console.log(chalk.yellow("You currently do not have any tasks to delete."));
+    print(chalk.yellow("You currently do not have any tasks to delete."));
   }
 }
 
 async function editTasksFn() {
   if (todoList.length !== 0) {
-    const editTasksPrompt = await inquirer.prompt<{ editTasks: string, editWithTasks: string }>([{
-      name: "editTasks",
-      type: "list",
-      message: (chalk.blue) ("Select task to edit:"),
-      choices: todoList.map(task => (task)),
-    }, {
-      name: "editWithTasks",
-      type: "input",
-      message: (chalk.blue) ("Enter updated task:"),
-    }]);
-    const { editTasks, editWithTasks } = editTasksPrompt;
+    const { editTasks, editWithTasks } = await inquirer.prompt<{
+      editTasks: string;
+      editWithTasks: string;
+    }>([
+      {
+        name: "editTasks",
+        type: "list",
+        message: "Select task to edit:",
+        choices: [...todoList],
+      },
+      {
+        name: "editWithTasks",
+        type: "input",
+        message: "Enter updated task:",
+      },
+    ]);
     const index = todoList.indexOf(editTasks);
     if (editWithTasks.trim() !== "") {
       todoList[index] = editWithTasks.trim();
-      console.log(chalk.gray(`The task ${chalk.whiteBright(editTasks)} was edited with ${chalk.bgBlack.whiteBright(editWithTasks)} succesfully!`))
+      print(
+        chalk.bgGreenBright.bold(
+          `The task ${chalk.whiteBright(
+            editTasks
+          )} was edited with ${chalk.bgBlack.whiteBright(
+            editWithTasks
+          )} succesfully!`
+        )
+      );
     } else {
-      console.log(chalk.yellow("Task description cannot be empty."));
+      print(chalk.yellow("Task description cannot be empty."));
     }
   } else {
-    console.log(chalk.yellow("You currently do not have any tasks to edit."));
+    print(chalk.yellow("You currently do not have any tasks to edit."));
   }
 }
-
 async function exit() {
-  console.log(chalk.bold.redBright("Exiting..."));
+  print(chalk.bold.redBright("Exiting..."));
   process.exit();
 }
 
 async function main() {
-  await rainbowTitle();
+  await title();
   while (true) {
     let operation: string = await operationFn();
     switch (operation) {
-      case "Add Tasks":
+      case Operation.Add_Tasks:
         await addTasksFn();
         break;
-      case "Edit Tasks":
+      case Operation.Edit_Tasks:
         await editTasksFn();
         break;
-      case "Delete Tasks":
+      case Operation.Delete_Tasks:
         await deleteTasksFn();
         break;
-      case "View List":
+      case Operation.View_List:
         await viewTasksFn();
         break;
-      case "Mark As Done":
+      case Operation.Mark_As_Done:
         await markedAsDone();
         break;
-      case "Exit":
+      case Operation.Exit:
         await exit();
         break;
     }

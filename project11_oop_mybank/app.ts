@@ -122,7 +122,7 @@ namespace MyBank {
     static account: Customer;
     static bank_account: Bank_Account;
 
-    public static async create_account() {
+    public static async create_account(): Promise<void> {
       let first_name = await Prompt.Prompt.prompt_type_input(
         "Enter your First name."
       );

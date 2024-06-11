@@ -4,112 +4,82 @@ import chalk from "chalk";
 import inquirer from "inquirer";
 import animation from "chalk-animation";
 
+type str = string;
+type int = number;
+
+const print = (messages: any) => {
+  process.stdout.write(messages);
+};
+const round = (arg: int) => {
+  return Math.floor(arg);
+}
+
 class AnimateBanner {
-  private static banner: string = `
-  "Welcome to my countdown timer!"
-   __  ___        ____   ___
-  /_ |/ _  \\  _  |___  \\/ _ \\
-   | | | | | (_)   __) | | | |
-   | | | | |      |__ <| | | |
-   | | |_| |  _   ___) | |_| |
-   |_|\\___/  (_) |____/ \\___/
-  \n
-
-  Developed by MUHAMMED SAAD \n\n`;
-
-  private static sleep(ms: number): Promise<void> {
-    return new Promise<void>((resolve) => setTimeout(resolve, ms));
+  private static banner: str = "TypeScript And NodeJs Projects\n\nProject #09: CountDown Timer\n\nDeveloped by MUHAMMED SAAD \n\n";
+  public static sleep(ms: int): Promise<void> {
+    return new Promise((res) => setTimeout(res, ms));
   }
 
-  static async rainbowTitle() {
-    const addRainbowTitle = animation.rainbow(AnimateBanner.banner); // Corrected method name to 'rainbowString'
+  public static async rainbowTitle(): Promise<void> {
+    let add_rainbow_title = animation.rainbow(this.banner);
     await AnimateBanner.sleep(2000);
-    addRainbowTitle.stop();
+    add_rainbow_title.stop();
   }
 }
 
 class Main {
-  static async main() {
-    await AnimateBanner.rainbowTitle();
+  private static async timer() {
     const { input } = await inquirer.prompt({
       name: "input",
       type: "input",
-      message:
-        "Enter date & time in the format 'dd-mm-yyyy_hh:mm:ss'. Time should be in 24-hour format. The hour between 01 to 24!",
+      message: "Please enter the date and time in the following format: 'YYYY-MM-DD_HH:MM:SS' (24-hour format).",
       validate: function (input: string) {
-        if (
-          input
-            .trim()
-            .match(
-              /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-\d{4}\_(?:0[1-9]|1[0-9]|2[0-4]):[0-5][0-9]:[0-5][0-9]$/
-            )
-        ) {
+        if (input.trim().match(/^((\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[01])_(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9])$/)) {
           return true;
         } else {
-          console.log("\nEnter a valid date and time!");
+          print("\nEnter a valid date and time!");
           return false;
         }
       },
     });
-    const [date, time] = input.split("_");
-    const [day, month, year] = date.split("-");
-    const [hour, minute, second] = time.split(":");
-
-    const inputDate = new Date(
-      parseInt(year),
-      parseInt(month) - 1,
-      parseInt(day),
-      parseInt(hour),
-      parseInt(minute),
-      parseInt(second)
-    );
+    const inputDate: int = Date.parse(input.replace('_', 'T'))
     const intervalId = setInterval(() => {
       console.clear();
-      const currentDate = Date.now();
-      const difference = inputDate.getTime() - currentDate;
+      const currentDate: int = Date.now();
+      const difference: int = inputDate - currentDate;
       if (difference > 0) {
-        const millisecondsPerSecond = 1000;
-        const millisecondsPerMinute = millisecondsPerSecond * 60;
-        const millisecondsPerHour = millisecondsPerMinute * 60;
-        const millisecondsPerDay = millisecondsPerHour * 24;
-        const millisecondsPerMonth = millisecondsPerDay * 30;
-        const millisecondsPerYear = millisecondsPerDay * 365;
-        
-        const leftYear = Math.floor(difference / millisecondsPerYear);
-        const leftMonth = Math.floor((difference % millisecondsPerYear) / millisecondsPerMonth);
-        const leftDay = Math.floor((difference % millisecondsPerMonth) / millisecondsPerDay);
-        const leftHour = Math.floor((difference % millisecondsPerDay) / millisecondsPerHour);
-        const leftMinute = Math.floor((difference % millisecondsPerHour) / millisecondsPerMinute);
-        const leftSecond = Math.floor((difference % millisecondsPerMinute) / millisecondsPerSecond);
-                
-        process.stdout.write("Time Left:");
-        if (!(leftYear < 1)) {
-          process.stdout.write(`\tYears: ${leftYear}`);
-        }
-        if (!(leftMonth < 1)) {
-          process.stdout.write(`\tMonths: ${leftMonth}`);
-        }
-        if (!(leftDay < 1)) {
-          process.stdout.write(`\tDays: ${leftDay}`);
-        }
-        if (!(leftHour < 1)) {
-          process.stdout.write(`\tHours: ${leftHour}`);
-        }
-        if (!(leftMinute < 1)) {
-          process.stdout.write(`\tMinutes: ${leftMinute}`);
-        }
-        if (!(leftSecond < 1)) {
-          process.stdout.write(`\tSeconds: ${leftSecond}`);
-        }
+        const millisecondsPerSecond: int = 1000;
+        const millisecondsPerMinute: int = millisecondsPerSecond * 60;
+        const millisecondsPerHour: int = millisecondsPerMinute * 60;
+        const millisecondsPerDay: int = millisecondsPerHour * 24;
+        const millisecondsPerMonth: int = millisecondsPerDay * 30;
+        const millisecondsPerYear: int = millisecondsPerDay * 365;
 
-        if (difference <= 0) {
-          clearInterval(intervalId);
-        }
+        const leftYear   : int = round(difference  / millisecondsPerYear);
+        const leftMonth  : int = round((difference % millisecondsPerYear) / millisecondsPerMonth);
+        const leftDay    : int = round((difference % millisecondsPerMonth) / millisecondsPerDay);
+        const leftHour   : int = round((difference % millisecondsPerDay) / millisecondsPerHour);
+        const leftMinute : int = round((difference % millisecondsPerHour) / millisecondsPerMinute);
+        const leftSecond : int = round((difference % millisecondsPerMinute) / millisecondsPerSecond);
+
+        print((chalk.rgb(255,215,0).bold)("Time Left:\n"));
+        if (!(leftYear < 1))    print((chalk.bgBlueBright.bold)(`\tYears: ${leftYear}`));
+        if (!(leftMonth < 1))   print((chalk.bgGreenBright.bold)(`\tMonths: ${leftMonth}`));
+        if (!(leftDay < 1))     print((chalk.bgYellowBright.bold)(`\tDays: ${leftDay}`));
+        if (!(leftHour < 1))    print((chalk.bgRedBright.bold)(`\tHours: ${leftHour}`));
+        if (!(leftMinute < 1))  print((chalk.bgBlackBright.bold)(`\tMinutes: ${leftMinute}`));
+        if (!(leftSecond < 1))  print((chalk.bgCyanBright.bold)(`\tSeconds: ${leftSecond}\r`));
       } else {
-        console.log(chalk.redBright(`The time is Expired!`));
-        process.exit();
+        print((chalk.redBright.bold)(`The timer has Expired!`));
+        clearInterval(intervalId);
       }
     }, 1000);
   }
+  public static async main(){
+    await AnimateBanner.rainbowTitle();
+      await Main.timer();
+      await AnimateBanner.sleep(2000)
+  }
 }
-Main.main();
+
+Main.main()

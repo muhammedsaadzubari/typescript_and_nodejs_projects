@@ -10,34 +10,16 @@ const currencyRates = {
     AED: { PKR: 75.81, USD: 0.27, SAR: 1.02, EUR: 0.25, AED: 1, GBP: 0.22 },
     GBP: { PKR: 351.43, USD: 1.26, SAR: 4.73, EUR: 1.17, AED: 4.64, GBP: 1 },
 };
-async function sleep(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-async function animateTitle() {
-    const titleAnimation = chalkAnimation.rainbow(`
-  Let's FACILITATE the conversion of your CURRENCY. \n
-  
-  ||====================================================================||
-  ||//$\\\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\//$\\\\||
-  ||(100)==================| FEDERAL RESERVE NOTE |================(100)||
-  ||\\\\$//        ~         '------========--------'                \\\\$//||
-  ||<< /        /$\\              // ____ \\\\                         \\ >>||
-  ||>>|  12    //L\\\\            // ///..) \\\\         L38036133B   12 |<<||
-  ||<<|        \\\\ //           || <||  >\\  ||                        |>>||
-  ||>>|         \\$/            ||  $$ --/  ||        One Hundred     |<<||
-  ||<<|      L38036133B        *\\\\  |\\_/  //* series                 |>>||
-  ||>>|  12                     *\\\\/___\\_//*   1989                  |<<||
-  ||<<\\      Treasurer     ______/Franklin\\________     Secretary 12 />>||
-  ||//$\\                 ~|UNITED STATES OF AMERICA|~               /$\\\\||
-  ||(100)===================  ONE HUNDRED DOLLARS =================(100)||
-  ||\\\\$//\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\\\$//||
-  ||====================================================================||        
-  
-  Developed by MUHAMMED SAAD \n\n
-  `);
-    await sleep(2000);
-    titleAnimation.stop();
-}
+const sleep = () => {
+    return new Promise((resolve) => {
+        setTimeout(resolve, 2000);
+    });
+};
+const title = async () => {
+    let rainbowTitleAnimation = chalkAnimation.rainbow("TypeScript And NodeJs Projects\n\nProject #04: Currency Convertor\n\nDeveloped by MUHAMMED SAAD \n\n");
+    await sleep();
+    rainbowTitleAnimation.stop();
+};
 async function selectCurrency(promptMessage, choices) {
     const { currency } = await inquirer.prompt({
         name: "currency",
@@ -73,7 +55,7 @@ async function convertCurrency(fromCurrency, toCurrency, amount) {
     return amount * conversionRate;
 }
 async function main() {
-    await animateTitle();
+    await title();
     let continueConversion = true;
     while (continueConversion) {
         try {

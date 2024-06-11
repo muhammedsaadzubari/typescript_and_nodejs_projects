@@ -18,35 +18,20 @@ const currencyRates: Currency = {
   GBP: { PKR: 351.43, USD: 1.26, SAR: 4.73, EUR: 1.17, AED: 4.64, GBP: 1 },
 };
 
-async function sleep(ms: number): Promise<void> {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms));
-}
+const sleep = () => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, 2000);
+  });
+};
 
-async function animateTitle(): Promise<void> {
-  const titleAnimation = chalkAnimation.rainbow(`
-  Let's FACILITATE the conversion of your CURRENCY. \n
-  
-  ||====================================================================||
-  ||//$\\\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\//$\\\\||
-  ||(100)==================| FEDERAL RESERVE NOTE |================(100)||
-  ||\\\\$//        ~         '------========--------'                \\\\$//||
-  ||<< /        /$\\              // ____ \\\\                         \\ >>||
-  ||>>|  12    //L\\\\            // ///..) \\\\         L38036133B   12 |<<||
-  ||<<|        \\\\ //           || <||  >\\  ||                        |>>||
-  ||>>|         \\$/            ||  $$ --/  ||        One Hundred     |<<||
-  ||<<|      L38036133B        *\\\\  |\\_/  //* series                 |>>||
-  ||>>|  12                     *\\\\/___\\_//*   1989                  |<<||
-  ||<<\\      Treasurer     ______/Franklin\\________     Secretary 12 />>||
-  ||//$\\                 ~|UNITED STATES OF AMERICA|~               /$\\\\||
-  ||(100)===================  ONE HUNDRED DOLLARS =================(100)||
-  ||\\\\$//\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\/\\\\$//||
-  ||====================================================================||        
-  
-  Developed by MUHAMMED SAAD \n\n
-  `);
-  await sleep(2000);
-  titleAnimation.stop();
-}
+const title = async () => {
+  let rainbowTitleAnimation = chalkAnimation.rainbow(
+    "TypeScript And NodeJs Projects\n\nProject #04: Currency Convertor\n\nDeveloped by MUHAMMED SAAD \n\n"
+  );
+  await sleep();
+  rainbowTitleAnimation.stop();
+};
+
 
 async function selectCurrency(promptMessage: string, choices: string[]): Promise<string> {
   const { currency } = await inquirer.prompt({
@@ -86,7 +71,7 @@ async function convertCurrency(fromCurrency: string, toCurrency: string, amount:
 }
 
 async function main() {
-  await animateTitle();
+  await title();
   let continueConversion = true;
   while (continueConversion) {
     try {
