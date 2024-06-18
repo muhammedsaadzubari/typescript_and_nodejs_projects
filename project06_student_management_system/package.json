@@ -1,6 +1,6 @@
 {
   "name": "@muhammedsaadzubari/project06_student_management_system",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "main": "app.js",
   "type": "module",
@@ -14,12 +14,14 @@
   "dependencies": {
     "chalk": "^5.3.0",
     "chalk-animation": "^2.0.3",
-    "inquirer": "^9.2.22"
+    "inquirer": "^9.2.22",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "@types/chalk": "^2.2.0",
     "@types/chalk-animation": "^1.6.3",
     "@types/inquirer": "^9.0.7",
-    "@types/node": "^20.12.12"
+    "@types/node": "^20.12.12",
+    "@types/validator": "^13.11.10"
   }
 }

@@ -1,234 +1,395 @@
 #!/usr/bin/env node
+import ora from "ora";
 import chalk from "chalk";
 import inquirer from "inquirer";
+import validator from "validator";
 import animation from "chalk-animation";
-var title;
-(function (title) {
+const print = (...message) => {
+    console.log(...message);
+};
+const exit = () => {
+    print((chalk.bgRedBright.bold)("Exiting..."));
+    process.exit();
+};
+var MyBank;
+(function (MyBank) {
     class AnimateBanner {
-        static banner = `
-  Welcome to my countdown timer!
-  \n
-  $$\\      $$\\ $$\\     $$\\             $$$$$$$\\   $$$$$$\\  $$\\   $$\\ $$\\   $$\\ 
-  $$$\\    $$$ |\\$$\\   $$  |            $$  __$$\\ $$  __$$\\ $$$\\  $$ |$$ | $$  |
-  $$$$\\  $$$$ | \\$$\\ $$  /             $$ |  $$ |$$ /  $$ |$$$$\\ $$ |$$ |$$  / 
-  $$\\$$\\$$ $$ |  \\$$$$  /              $$$$$$$\\ |$$$$$$$$ |$$ $$\\$$ |$$$$$  /  
-  $$ \\$$$  $$ |   \\$$  /               $$  __$$\\ $$  __$$ |$$ \\$$$$ |$$  $$<   
-  $$ |\\$  /$$ |    $$ |                $$ |  $$ |$$ |  $$ |$$ |\\$$$ |$$ |\\$$\\  
-  $$ | \\_/ $$ |    $$ |                $$$$$$$  |$$ |  $$ |$$ | \\$$ |$$ | \\$$\\ 
-  \\\__|     \\__|    \\__|                \\_______/ \\__|  \\__|\\__|  \\__|\\__|  \\__|
-  \n
-  Developed by MUHAMMED SAAD \n\n`;
+        static banner = "TypeScript And NodeJs Projects\n\nProject #11: My Bank with Object-Oriented Promgramming\n\nDeveloped by MUHAMMED SAAD \n\n";
         static sleep(ms) {
-            return new Promise((resolve) => setTimeout(resolve, ms));
+            return new Promise((res) => setTimeout(res, ms));
         }
         static async rainbowTitle() {
-            const addRainbowTitle = animation.rainbow(AnimateBanner.banner);
-            await AnimateBanner.sleep(2000);
+            let addRainbowTitle = animation.rainbow(AnimateBanner.banner);
+            await AnimateBanner.sleep(1000);
             addRainbowTitle.stop();
         }
     }
-    title.AnimateBanner = AnimateBanner;
-})(title || (title = {}));
-var Prompt;
-(function (Prompt_1) {
-    class Prompt {
-        static async prompt_type_confirm(message) {
-            let { prompt } = await inquirer.prompt({
-                name: "prompt",
-                type: "confirm",
-                message,
-            });
-            return prompt;
+    MyBank.AnimateBanner = AnimateBanner;
+    class Customer {
+        firstName;
+        lastName;
+        gender;
+        email;
+        age;
+        PIN;
+        mobileNumber;
+        accountBalance;
+        constructor(firstName, lastName, gender, email, age, PIN, mobileNumber, accountBalance) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.gender = gender;
+            this.email = email;
+            this.age = age;
+            this.PIN = PIN;
+            this.mobileNumber = mobileNumber;
+            this.accountBalance = accountBalance;
         }
-        static async prompt_type_input(message) {
-            let { prompt } = await inquirer.prompt({
-                name: "prompt",
-                type: "input",
-                message,
-            });
-            return prompt;
-        }
-        static async prompt_type_number(message) {
-            let { prompt } = await inquirer.prompt({
-                name: "prompt",
-                type: "number",
-                message,
-            });
-            return prompt;
-        }
-        static async prompt_type_list(message, choices) {
-            let { prompt } = await inquirer.prompt({
-                name: "prompt",
-                type: "list",
-                message,
-                choices,
-            });
-            return prompt;
-        }
+        ;
     }
-    Prompt_1.Prompt = Prompt;
-})(Prompt || (Prompt = {}));
-var MyBank;
-(function (MyBank) {
-    class Bank_Account {
-        account_balance;
-        constructor(balance) {
-            this.account_balance = balance;
-        }
+    MyBank.Customer = Customer;
+    class BankAccount {
+        accountBalance = CreateAccount.account.accountBalance;
         debit(amount) {
             let statement = "Sorry, you have insufficient balance!";
             if (amount > 0) {
                 statement = "The amount you entered is wrong!";
-                if (this.account_balance > amount) {
-                    this.account_balance -= amount;
-                    statement = `Transaction successful! New account balance is ${this.account_balance}.`;
+                if (this.accountBalance >= amount) {
+                    this.accountBalance -= amount;
+                    statement = `Transaction successful! New account balance is ${this.accountBalance}.`;
                 }
                 else {
                     statement = "You don't have enough money to do this transaction!";
                 }
             }
-            return statement;
+            print((chalk.bgGreenBright.bold)(`\n${statement}`));
+            print(`Your current balance is ${(chalk.bgGrey.bold)(this.accountBalance)}\n`);
+            CreateAccount.account.accountBalance = this.accountBalance;
         }
         credit(amount) {
-            let statement = "Transation Failed!";
+            let statement = "Transaction Failed!";
             if (amount > 0) {
-                this.account_balance += amount;
+                this.accountBalance += amount;
                 if (amount > 100) {
-                    this.account_balance -= 1;
+                    this.accountBalance -= 1;
                 }
                 statement = "Your account has been credited successfully!";
             }
-            return statement;
+            print((chalk.bgGreenBright.bold)(`\n${statement}`));
+            print(`Your current balance is ${(chalk.bgGrey.bold)(this.accountBalance)}\n`);
+            CreateAccount.account.accountBalance = this.accountBalance;
         }
     }
-    class Customer {
-        first_name;
-        last_name;
-        gender;
-        age;
-        mobile_number;
-        account_balance;
-        static bank_account;
-        constructor(first_name, last_name, gender, age, mobile_number, account_balance) {
-            this.first_name = first_name;
-            this.last_name = last_name;
-            this.gender = gender;
-            this.age = age;
-            this.mobile_number = mobile_number;
-            this.account_balance = account_balance;
-        }
-    }
-    class Main {
+    MyBank.BankAccount = BankAccount;
+    class CreateAccount {
         static account;
-        static bank_account;
-        static async create_account() {
-            let first_name = await Prompt.Prompt.prompt_type_input("Enter your First name.");
-            let last_name = await Prompt.Prompt.prompt_type_input("Enter your Last name.");
-            let gender = await Prompt.Prompt.prompt_type_list("Select your gender.", [
-                "Male",
-                "Female",
+        static isLogIn = false;
+        static bankAccount;
+        static async signUP() {
+            let { firstName, lastName, birthDate, gender, email, mobileNO, PIN, accountBalance, paymentMethod, paymentMethodPIN } = await inquirer.prompt([
+                {
+                    name: "firstName",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your first name:"),
+                    validate: (firstName) => {
+                        if (firstName.trim().length === 0) {
+                            return (chalk.bold.redBright)("Enter a valid first name!");
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                {
+                    name: "lastName",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your last name:"),
+                    validate: (lastName) => {
+                        if (lastName.trim().length === 0) {
+                            return (chalk.bold.redBright)("Enter a valid last name!");
+                        }
+                        else {
+                            return true;
+                        }
+                    }
+                },
+                {
+                    name: "birthDate",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your birth date (mm/dd/yyyy):"),
+                    validate: (birthDate) => {
+                        let date = new Date(birthDate).getTime();
+                        if (date < Date.now()) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid date!");
+                        }
+                    }
+                },
+                {
+                    name: "gender",
+                    type: "list",
+                    message: (chalk.bold.blueBright)("Please select your gender:"),
+                    choices: ["Male", "Female"]
+                },
+                {
+                    name: "email",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your email:"),
+                    validate: (email) => {
+                        if (validator.isEmail(email)) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid email!");
+                        }
+                    }
+                },
+                {
+                    name: "mobileNO",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your mobile number:"),
+                    validate: (mobileNO) => {
+                        if (validator.isMobilePhone(mobileNO)) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid mobile number!");
+                        }
+                    }
+                },
+                {
+                    name: "PIN",
+                    type: "password",
+                    message: (chalk.bold.blueBright)("Please input your PIN:"),
+                    mask: "•",
+                    validate: (PIN) => {
+                        if (PIN.match(/^\d{4,}$/)) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid PIN!");
+                        }
+                    }
+                },
+                {
+                    name: "accountBalance",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your initial account balance:"),
+                    validate: (accountBalance) => {
+                        if (Number(accountBalance) >= 100) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid account balance (Atleast 100/-)!");
+                        }
+                    }
+                },
+                {
+                    name: "paymentMethod",
+                    type: "list",
+                    message: (chalk.bold.blueBright)("Please select your payment method:"),
+                    choices: ["Jazz Cash", "Easy Paisa"]
+                },
+                {
+                    name: "paymentMethodPIN",
+                    type: "password",
+                    message: (chalk.bold.blueBright)(`Please input your PIN of your selected method:`),
+                    mask: "•",
+                    validate: (paymentMethodPIN) => {
+                        if (paymentMethodPIN.match(/^\d{4,}$/)) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid PIN!");
+                        }
+                    }
+                }
             ]);
-            let running1 = true;
-            let age;
-            while (running1) {
-                age = await Prompt.Prompt.prompt_type_number("Enter your age.");
-                if (isNaN(age)) {
-                    console.log(chalk.redBright("Enter a valid age!"));
-                }
-                else {
-                    running1 = false;
-                }
-            }
-            let running = true;
-            let mobile_number;
-            while (running) {
-                mobile_number = await Prompt.Prompt.prompt_type_input("Enter your Mobile number.");
-                if (mobile_number.match(/^0\d{10}$/)) {
-                    running = false;
-                }
-                else {
-                    console.log(chalk.redBright("Enter a valid mobile no.!"));
-                }
-            }
-            let running2 = true;
-            let account_balance;
-            while (running2) {
-                account_balance = await Prompt.Prompt.prompt_type_number("Enter your first deposit amount.");
-                if (isNaN(account_balance)) {
-                    console.log(chalk.redBright("Enter a valid amount!"));
-                }
-                else {
-                    running2 = false;
-                }
-            }
-            this.account = new Customer(first_name, last_name, gender, age, mobile_number, account_balance);
+            let balance = Number(accountBalance);
+            let age = new Date().getFullYear() - new Date(birthDate).getFullYear();
+            await AnimateBanner.sleep(1000);
+            console.log('\n');
+            const loader = ora("Checking Information...\n").start();
+            await AnimateBanner.sleep(2000);
+            loader.succeed((chalk.bold.greenBright)(` Your account has created and amount '${(chalk.green)(balance)}/-' was deposited successfully!`));
+            this.account = new Customer(firstName, lastName, gender, email, age, PIN, mobileNO, balance);
+            this.bankAccount = new BankAccount();
         }
-        static async create_account_main() {
-            let operation = await Prompt.Prompt.prompt_type_list("Which operation do you want to perform!", ["Create Account", "Exit"]);
-            switch (operation) {
-                case "Create Account":
-                    await this.create_account();
+        static async logIN(account) {
+            let input = await inquirer.prompt([
+                {
+                    name: "email",
+                    type: "input",
+                    message: (chalk.bold.blueBright)("Please input your email:"),
+                    validate: (email) => {
+                        if (validator.isEmail(email)) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid email!");
+                        }
+                    }
+                },
+                {
+                    name: "PIN",
+                    type: "password",
+                    message: (chalk.bold.blueBright)("Please input your PIN:"),
+                    mask: "•",
+                    validate: (PIN) => {
+                        if (PIN.match(/^\d{4,}$/)) {
+                            return true;
+                        }
+                        else {
+                            return (chalk.bold.redBright)("Enter a valid PIN!");
+                        }
+                    }
+                }
+            ]);
+            await AnimateBanner.sleep(1000);
+            console.log('\n');
+            const loader = ora("Checking Information...\n").start();
+            await AnimateBanner.sleep(2000);
+            if (input.email === account.email && input.PIN === account.PIN) {
+                loader.succeed((chalk.bold.greenBright)('You have logged In!\n'));
+                CreateAccount.isLogIn = true;
+            }
+            else {
+                loader.fail((chalk.redBright.bold)('You fail to log In!'));
+                CreateAccount.isLogIn = false;
+            }
+        }
+        static async createAccount() {
+            let SignUP;
+            (function (SignUP) {
+                SignUP["I"] = "Sign UP";
+                SignUP["II"] = "Exit";
+            })(SignUP || (SignUP = {}));
+            ;
+            let LogIN;
+            (function (LogIN) {
+                LogIN["I"] = "Log IN";
+                LogIN["II"] = "Exit";
+            })(LogIN || (LogIN = {}));
+            ;
+            let { inputForSignUP } = await inquirer.prompt([
+                {
+                    name: "inputForSignUP",
+                    type: "list",
+                    message: "Select operation to perform!",
+                    choices: Object.values(SignUP)
+                }
+            ]);
+            switch (inputForSignUP) {
+                case SignUP.I:
+                    await CreateAccount.signUP();
                     console.table(this.account);
+                    console.log('\n');
                     break;
                 default:
-                    console.log(chalk.bgRedBright(chalk.bold("Exiting...")));
-                    process.exit();
+                    exit();
             }
-            this.bank_account = new Bank_Account(this.account.account_balance);
+            let { inputForLogIN } = await inquirer.prompt([
+                {
+                    name: "inputForLogIN",
+                    type: "list",
+                    message: "Select operation to perform!",
+                    choices: Object.values(LogIN)
+                }
+            ]);
+            let running = true;
+            while (running) {
+                switch (inputForLogIN) {
+                    case LogIN.I:
+                        await CreateAccount.logIN(CreateAccount.account);
+                        break;
+                    default:
+                        exit();
+                }
+                if (CreateAccount.isLogIn === true) {
+                    break;
+                }
+                else {
+                    const { confirm } = await inquirer.prompt({
+                        name: "confirm",
+                        type: "confirm",
+                        message: "Do you want to continue?",
+                    });
+                    running = confirm;
+                }
+            }
         }
-        static async main() {
-            let operation2 = await Prompt.Prompt.prompt_type_list("Which operation do you want to perform!", ["Debit", "Credit", "Balance", "Exit"]);
-            switch (operation2) {
-                case "Debit":
-                    let running1 = true;
-                    let amount_Debit;
-                    while (running1) {
-                        amount_Debit = await Prompt.Prompt.prompt_type_number("How many amount do you want to debit?");
-                        if (isNaN(amount_Debit)) {
-                            console.log(chalk.redBright("Enter a valid amount!"));
+    }
+    MyBank.CreateAccount = CreateAccount;
+    class Bank {
+        static async bank() {
+            let Operation;
+            (function (Operation) {
+                Operation["I"] = "Debit";
+                Operation["II"] = "Credit";
+                Operation["III"] = "Balance Inquiry";
+                Operation["IV"] = "Exit";
+            })(Operation || (Operation = {}));
+            const { operation } = await inquirer.prompt({
+                name: "operation",
+                type: "list",
+                message: "Select operation to perform!",
+                choices: Object.values(Operation),
+            });
+            switch (operation) {
+                case Operation["I"]:
+                    let { amountForDebit } = await inquirer.prompt({
+                        name: "amountForDebit",
+                        type: "input",
+                        message: (chalk.bold.blueBright)("How many amount do you want to debit?"),
+                        validate: (amountForDebit) => {
+                            if (isNaN(Number(amountForDebit))) {
+                                return (chalk.bold.redBright)("Enter a valid amount!");
+                            }
+                            else {
+                                return true;
+                            }
                         }
-                        else {
-                            running1 = false;
-                        }
-                    }
-                    let debit = this.bank_account.debit(amount_Debit);
-                    console.log(debit);
-                    console.log(chalk.yellowBright(`You current balance is ${chalk.bgGreenBright(chalk.bold(this.bank_account.account_balance))}.`));
+                    });
+                    let debitAmount = Number(amountForDebit);
+                    CreateAccount.bankAccount.debit(debitAmount);
                     break;
-                case "Credit":
-                    let running2 = true;
-                    let amount_Credit;
-                    while (running2) {
-                        amount_Credit = await Prompt.Prompt.prompt_type_number("How many amount do you want to credit?");
-                        if (isNaN(amount_Credit)) {
-                            console.log(chalk.redBright("Enter a valid amount!"));
+                case Operation["II"]:
+                    let { amountForCredit } = await inquirer.prompt({
+                        name: "amountForCredit",
+                        type: "input",
+                        message: (chalk.bold.blueBright)("How many amount do you want to credit?"),
+                        validate: (amountForCredit) => {
+                            if (isNaN(Number(amountForCredit))) {
+                                return (chalk.bold.redBright)("Enter a valid amount!");
+                            }
+                            else {
+                                return true;
+                            }
                         }
-                        else {
-                            running2 = false;
-                        }
-                    }
-                    let credit = this.bank_account.credit(amount_Credit);
-                    console.log(credit);
-                    console.log(chalk.yellowBright(`You current balance is ${chalk.bgGreenBright(chalk.bold(this.bank_account.account_balance))}.`));
+                    });
+                    let creditAmount = Number(amountForCredit);
+                    CreateAccount.bankAccount.credit(creditAmount);
                     break;
-                case "Balance":
-                    console.log(chalk.yellowBright(`You current balance is ${chalk.bgGreenBright(chalk.bold(this.bank_account.account_balance))}.`));
+                case Operation["III"]:
+                    print(`\nYour current balance is ${(chalk.bgGrey.bold)(CreateAccount.account.accountBalance)}\n`);
                     break;
                 default:
-                    console.log(chalk.bgRedBright(chalk.bold("Exiting...")));
-                    process.exit();
+                    exit();
+            }
+        }
+    }
+    MyBank.Bank = Bank;
+    class Main {
+        static async main() {
+            await MyBank.AnimateBanner.rainbowTitle();
+            await MyBank.CreateAccount.createAccount();
+            let bool = true;
+            while (bool) {
+                await MyBank.Bank.bank();
             }
         }
     }
     MyBank.Main = Main;
 })(MyBank || (MyBank = {}));
-(async () => {
-    await title.AnimateBanner.rainbowTitle();
-    await MyBank.Main.create_account_main();
-    let running = true;
-    while (running) {
-        await MyBank.Main.main();
-        running = await Prompt.Prompt.prompt_type_confirm("Do you want to continue?");
-    }
-    console.log(chalk.bgRedBright(chalk.bold("Exiting...")));
-})();
+MyBank.Main.main();
